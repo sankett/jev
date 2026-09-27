@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 
 const EXAMPLES = [
   ["Billing issue", "I was charged twice for my subscription this morning. Please refund the duplicate payment as soon as possible."],
@@ -155,6 +156,7 @@ export default function Home() {
 
   const trial = result?.trials[0];
   return <main className="min-h-screen bg-[#0c0a0f] px-5 py-10 text-zinc-100"><div className="mx-auto max-w-6xl">
+    <Link href="/resume-evaluation" className="float-right rounded-full border border-fuchsia-400/50 px-4 py-2 text-sm text-fuchsia-200 hover:bg-fuchsia-400/10">Resume Evaluation →</Link>
     <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-fuchsia-300">JEV decision lab</p>
     <h1 className="text-4xl font-semibold tracking-tight md:text-6xl">Explicit decisions, compared.</h1>
     <p className="mt-4 max-w-2xl text-zinc-400">Compare JEV and OpenAI on the same support-ticket decisions: category, urgency, and human review.</p>
