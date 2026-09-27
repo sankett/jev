@@ -43,6 +43,7 @@ function estimateOpenaiCost(
 type RequestBody = {
   message?: unknown;
   runs?: unknown;
+  provider?: unknown;
 };
 
 function elapsed(start: number): number {
@@ -267,6 +268,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "runs must be either 1 or 3." }, { status: 400 });
   }
 
+  const provider = body.provider === "jev" || body.provider === "openai" ? body.provider : null;
+  if (body.provider !== undefined && (!provider || runs !== 1)) {
+    return NextResponse.json({ error: "provider must be jev or openai with one run." }, { status: 400 });
+  }
+
+  const model = process.env.OPENAI_MODEL || DEFAULT_MODEL;
+  if (provider === "jev") {
+    if (!process.env.TYPESAFE_API_KEY) return NextResponse.json({ error: "TYPESAFE_API_KEY is missing from .env.local." }, { status: 500 });
+    return NextResponse.json({ provider, model, branch: await runJev(message) });
+  }
+  if (provider === "openai") {
+    if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: "OPENAI_API_KEY is missing from .env.local." }, { status: 500 });
+    return NextResponse.json({ provider, model, branch: await runOpenai(message, model) });
+  }
+
   if (!process.env.TYPESAFE_API_KEY) {
     return NextResponse.json({ error: "TYPESAFE_API_KEY is missing from .env.local." }, { status: 500 });
   }
@@ -275,7 +291,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "OPENAI_API_KEY is missing from .env.local." }, { status: 500 });
   }
 
-  const model = process.env.OPENAI_MODEL || DEFAULT_MODEL;
   const trials: Trial[] = [];
 
   for (let index = 0; index < runs; index += 1) {

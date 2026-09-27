@@ -130,12 +130,15 @@ async function runOpenAI(jobDescription: string, resume: string, requirements: R
 export async function POST(request: Request) {
   let body: unknown;
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Enter a valid JSON request." }, { status: 400 }); }
-  const parsed = evaluationRequestSchema.safeParse(body);
+  const parsed = evaluationRequestSchema.extend({ provider: z.enum(["jev", "openai"]) }).safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: "Invalid JD, resume, or requirements. Check lengths and required fields." }, { status: 400 });
-  const { jobDescription, resume, requirements } = parsed.data;
+  const { jobDescription, resume, requirements, provider } = parsed.data;
   const invalid = validateRequirements(jobDescription, requirements);
   if (invalid) return NextResponse.json({ error: invalid }, { status: 400 });
-  if (!process.env.OPENAI_API_KEY || !process.env.TYPESAFE_API_KEY) return NextResponse.json({ error: "OPENAI_API_KEY and TYPESAFE_API_KEY are required in .env.local." }, { status: 500 });
-  const [jev, openai] = await Promise.all([runJev(jobDescription, resume, requirements), runOpenAI(jobDescription, resume, requirements)]);
-  return NextResponse.json({ jev, openai, model: process.env.OPENAI_MODEL || "gpt-5.6-Luna" });
+  if (provider === "jev" && !process.env.TYPESAFE_API_KEY) return NextResponse.json({ error: "TYPESAFE_API_KEY is missing from .env.local." }, { status: 500 });
+  if (provider === "openai" && !process.env.OPENAI_API_KEY) return NextResponse.json({ error: "OPENAI_API_KEY is missing from .env.local." }, { status: 500 });
+  const result = provider === "jev"
+    ? await runJev(jobDescription, resume, requirements)
+    : await runOpenAI(jobDescription, resume, requirements);
+  return NextResponse.json({ provider, result, model: process.env.OPENAI_MODEL || "gpt-5.6-Luna" });
 }
