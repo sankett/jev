@@ -1,0 +1,5 @@
+name = "router_tiny"
+description = "Low-stakes lookups, renames, trivial edits and one-line answers."
+model = "gpt-6-luna"
+model_reasoning_effort = "low"
+developer_instructions = "Complete the delegated task. Do not route recursively. End every reply with a separate line: Model used: gpt-6-luna"

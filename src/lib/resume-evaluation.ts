@@ -32,6 +32,11 @@ export type Evaluation = {
   explanation?: string;
 };
 export type Metrics = {
+  cachedInputTokens?: number | null;
+  cacheWriteTokens?: number | null;
+  reasoningTokens?: number | null;
+  serviceTier?: string | null;
+  costSource?: "reported" | "estimated";
   latencyMs: number;
   calls: number;
   inputTokens: number | null;
@@ -39,19 +44,7 @@ export type Metrics = {
   estimatedCostUsd?: number;
 };
 
-const OPENAI_PRICING: Record<string, { input: number; cachedInput: number; output: number }> = {
-  "gpt-5.6-sol": { input: 4, cachedInput: 0.4, output: 20 },
-  "gpt-5.6": { input: 4, cachedInput: 0.4, output: 20 },
-  "gpt-5.6-terra": { input: 2, cachedInput: 0.2, output: 12 },
-  "gpt-5.6-luna": { input: 0.2, cachedInput: 0.02, output: 1.2 },
-};
-
-export function estimateOpenaiCost(model: string, input: number | undefined, cached: number | undefined, output: number | undefined): number | undefined {
-  const price = OPENAI_PRICING[model.toLowerCase()];
-  if (!price || input == null || output == null) return undefined;
-  const cachedInput = Math.min(input, cached ?? 0);
-  return ((input - cachedInput) * price.input + cachedInput * price.cachedInput + output * price.output) / 1_000_000;
-}
+export { estimateOpenaiCost } from "./pricing.ts";
 
 export const evaluationRequestSchema = z.object({
   jobDescription: z.string().trim().min(20).max(MAX_JD_LENGTH),
@@ -78,6 +71,47 @@ export function validatedQuote(source: string, quote: string | null | undefined)
   return trimmed && source.includes(trimmed) ? trimmed : null;
 }
 
+export type OpenaiResumeItem = { id: string; status: Status; evidenceQuote: string | null; explanation: string };
+export function mapOpenaiResumeEvaluations(resume: string, requirements: Requirement[], items: OpenaiResumeItem[]): Evaluation[] {
+  const expected = new Set(requirements.map((requirement) => requirement.id));
+  const ids = new Set(items.map((item) => item.id));
+  if (items.length !== expected.size || ids.size !== items.length || items.some((item) => !expected.has(item.id))) {
+    throw new Error("Invalid OpenAI evaluation response: every requirement must appear exactly once");
+  }
+  const byId = new Map(items.map((item) => [item.id, item]));
+  return requirements.map((requirement) => {
+    const item = byId.get(requirement.id)!;
+    const evidenceQuote = validatedQuote(resume, item.evidenceQuote);
+    const status = (item.status === "supported" || item.status === "partial") && !evidenceQuote ? "uncertain" : item.status;
+    return { id: requirement.id, status, evidenceQuote, explanation: evidenceQuote || !item.evidenceQuote ? item.explanation : "The cited quote was not found in the resume; result marked uncertain." };
+  });
+}
+
+// Apply the same limits to extracted requirements that evaluation will enforce.
+export function normalizeExtractedRequirement(
+  jobDescription: string,
+  item: Omit<Requirement, "id">,
+  id: string,
+): Requirement | null {
+  const quote = validatedQuote(jobDescription, item.jdSourceQuote);
+  if (!quote) return null;
+  const parsed = requirementSchema.safeParse({
+    ...item,
+    id,
+    jdSourceQuote: quote,
+    choiceOptions: item.evaluationType === "choice" ? item.choiceOptions : [],
+    targetOption: item.evaluationType === "choice" ? item.targetOption : "",
+  });
+  if (!parsed.success) return null;
+  const requirement = parsed.data;
+  if (requirement.evaluationType === "choice" && (
+    requirement.choiceOptions.length < 2 ||
+    new Set(requirement.choiceOptions.map((option) => option.toLowerCase())).size !== requirement.choiceOptions.length ||
+    !requirement.choiceOptions.includes(requirement.targetOption)
+  )) return null;
+  return requirement;
+}
+
 export function aggregate(requirements: Requirement[], evaluations: Evaluation[]) {
   const results = new Map(evaluations.map((item) => [item.id, item]));
   let lower = 0;
@@ -96,8 +130,8 @@ export function aggregate(requirements: Requirement[], evaluations: Evaluation[]
     if (requirement.importance === "mandatory" && status === "not supported") missingMandatory += 1;
   }
   return {
-    lowerPercent: Math.round((lower / total) * 100),
-    upperPercent: Math.round((upper / total) * 100),
+    lowerPercent: total ? Math.round((lower / total) * 100) : 0,
+    upperPercent: total ? Math.round((upper / total) * 100) : 0,
     missingMandatory,
     uncertain,
   };
@@ -105,8 +139,16 @@ export function aggregate(requirements: Requirement[], evaluations: Evaluation[]
 
 export function evidenceCandidates(resume: string, requirement: Requirement): string[] {
   const words = new Set(`${requirement.requirement} ${requirement.criteria}`.toLowerCase().match(/[a-z0-9+#.]{3,}/g) ?? []);
-  const pieces = resume.split(/\n\s*\n|\n|(?<=[.!?])\s+(?=[A-Z])/).map((part) => part.trim()).filter((part) => part.length >= 15);
-  return pieces.map((part, index) => ({ part: part.slice(0, 360), index, relevance: (part.toLowerCase().match(/[a-z0-9+#.]{3,}/g) ?? []).filter((word) => words.has(word)).length }))
+  const pieces = resume.split(/\n\s*\n|\n|(?<=[.!?])\s+(?=[A-Z])/).flatMap((part) => {
+    // Preserve coverage of long paragraphs rather than discarding their tail.
+    const chunks: string[] = [];
+    for (let start = 0; start < part.length; start += 280) {
+      const chunk = part.slice(start, start + 360).trim();
+      if (chunk.length >= 15) chunks.push(chunk);
+    }
+    return chunks;
+  });
+  return pieces.map((part, index) => ({ part, index, relevance: (part.toLowerCase().match(/[a-z0-9+#.]{3,}/g) ?? []).filter((word) => words.has(word)).length }))
     .filter(({ relevance }) => relevance > 0)
     .sort((a, b) => b.relevance - a.relevance || a.index - b.index)
     .slice(0, 7)

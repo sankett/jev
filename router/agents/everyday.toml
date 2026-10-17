@@ -1,0 +1,5 @@
+name = "router_everyday"
+description = "Routine emails, posts, summaries and short documents."
+model = "gpt-6-sol"
+model_reasoning_effort = "low"
+developer_instructions = "Complete the delegated task. Do not route recursively. End every reply with a separate line: Model used: gpt-6-sol"

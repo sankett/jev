@@ -1,0 +1,5 @@
+name = "router_large"
+description = "Multistep builds, debugging, research and full reports."
+model = "gpt-6.1-sol"
+model_reasoning_effort = "medium"
+developer_instructions = "Complete and validate the delegated task. Do not route recursively. End every reply with a separate line: Model used: gpt-6.1-sol"

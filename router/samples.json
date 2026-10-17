@@ -1,0 +1,12 @@
+[
+  { "label": "Tiny lookup", "message": "What is 17 + 25? Answer in one line." },
+  { "label": "Tiny rename", "message": "Rename the variable userCnt to userCount in this line: const userCnt = users.length;" },
+  { "label": "Everyday email", "message": "Write a friendly 120-word email to Sam thanking them for Friday's demo and requesting a follow-up meeting next week." },
+  { "label": "Everyday post", "message": "Write a short LinkedIn post announcing our new task tracker, emphasizing clear priorities and less busywork." },
+  { "label": "Large build", "message": "Build a Next.js dashboard with authentication, project CRUD, role-based access, PostgreSQL persistence, migrations and meaningful end-to-end tests. Plan the implementation and validate the whole flow." },
+  { "label": "Large research", "message": "Research and compare three database architectures for our analytics product. Produce a full report with cited sources, tradeoffs, a migration plan and operational validation steps." },
+  { "label": "Hardest strategy", "message": "Develop a three-year market-entry strategy for our company. Assess competitive dynamics, scenarios, capital allocation, key risks and irreversible decisions; a bad recommendation could cost millions." },
+  { "label": "Hardest costly decision", "message": "Review a proposed production migration of customer financial records and recommend go/no-go criteria. A wrong decision could lose data, breach contractual obligations and cost millions. Analyze failure modes and recovery guarantees." },
+  { "label": "Context reply 1", "message": "yes do that but make it shorter" },
+  { "label": "Context reply 2", "message": "use the second one" }
+]

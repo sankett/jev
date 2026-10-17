@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="A plain-language guide to Jev, its strengths and limits, and the Jev Decision Lab support and resume demos.">
+  <title>Jev explained | Jev Decision Lab</title>
+  <style>
+    :root {
+      --ink: #142039;
+      --muted: #53627a;
+      --paper: #f7f8fc;
+      --white: #fff;
+      --navy: #111a31;
+      --violet: #6d36d8;
+      --violet-soft: #eee8ff;
+      --teal: #008f89;
+      --teal-soft: #e3f7f4;
+      --line: #d9e0eb;
+      --shadow: 0 18px 50px rgba(19, 31, 56, .08);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 400 18px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    a { color: inherit; text-underline-offset: .2em; }
+    a:focus-visible, summary:focus-visible { outline: 3px solid var(--teal); outline-offset: 4px; border-radius: 4px; }
+    .skip { position: absolute; left: 1rem; top: -5rem; z-index: 30; padding: .5rem .8rem; background: var(--white); color: var(--ink); }
+    .skip:focus { top: .8rem; }
+    .shell { width: min(100% - 3rem, 1120px); margin-inline: auto; }
+    .site-header { position: sticky; top: 0; z-index: 20; border-bottom: 1px solid rgba(255,255,255,.12); background: rgba(17,26,49,.97); color: var(--white); backdrop-filter: blur(12px); }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; min-height: 68px; }
+    .brand { display: inline-flex; align-items: center; gap: .65rem; flex: none; color: var(--white); font-size: .92rem; font-weight: 800; letter-spacing: .06em; text-decoration: none; text-transform: uppercase; }
+    .brand-mark { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: #a78bfa; color: var(--navy); font-size: .9rem; letter-spacing: -.08em; }
+    nav { display: flex; gap: .2rem; overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
+    nav::-webkit-scrollbar { display: none; }
+    nav a { padding: .5rem .72rem; border-radius: 7px; color: #d1daeb; font-size: .82rem; font-weight: 650; text-decoration: none; }
+    nav a:hover { background: rgba(255,255,255,.1); color: var(--white); }
+    section { scroll-margin-top: 88px; }
+    .hero { overflow: hidden; background: radial-gradient(circle at 88% 16%, rgba(113,66,213,.34), transparent 34%), radial-gradient(circle at 14% 95%, rgba(0,185,176,.13), transparent 33%), var(--navy); color: var(--white); }
+    .hero-inner { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(320px, .88fr); align-items: center; gap: clamp(2rem, 5vw, 5rem); padding-block: clamp(4rem, 9vw, 8rem) clamp(4rem, 7vw, 6rem); }
+    .eyebrow, .section-kicker { margin: 0 0 1rem; color: var(--violet); font-size: .78rem; font-weight: 850; letter-spacing: .16em; text-transform: uppercase; }
+    .hero .eyebrow { color: #78eee5; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 11ch; margin-bottom: 1.3rem; font-size: clamp(3.2rem, 6.5vw, 6.25rem); line-height: 1.03; letter-spacing: -.065em; }
+    h2 { max-width: 19ch; margin-bottom: 1.2rem; font-size: clamp(2.3rem, 4vw, 3.65rem); line-height: 1.11; letter-spacing: -.045em; }
+    h3 { margin-bottom: .45rem; font-size: 1.2rem; line-height: 1.3; letter-spacing: -.015em; }
+    .hero-lede { max-width: 56ch; margin-bottom: 1.8rem; color: #d4ddee; font-size: clamp(1.12rem, 2vw, 1.42rem); line-height: 1.55; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .7rem; }
+    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: .68rem 1.05rem; border: 1px solid transparent; border-radius: 9px; background: #9c79f8; color: #12172a; font-size: .9rem; font-weight: 800; text-decoration: none; }
+    .button:hover { background: #b197fa; }
+    .button.ghost { border-color: #63728f; background: transparent; color: var(--white); }
+    .button.ghost:hover { background: rgba(255,255,255,.1); }
+    .hero-visual { min-width: 0; padding: 1.3rem; border: 1px solid rgba(255,255,255,.16); border-radius: 20px; background: rgba(255,255,255,.07); box-shadow: 0 24px 70px rgba(0,0,0,.17); }
+    .visual-label { margin: 0 0 .5rem; color: #a9b9d4; font-size: .73rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+    .hero-ticket { margin: 0 0 1.2rem; font-size: 1.12rem; line-height: 1.45; }
+    .visual-divider { height: 1px; margin-bottom: 1.1rem; background: rgba(255,255,255,.16); }
+    .answer-line { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: .57rem 0; font-size: .9rem; }
+    .answer-line + .answer-line { border-top: 1px solid rgba(255,255,255,.12); }
+    .answer-line strong { color: #aaf5e9; text-align: right; }
+    .hero-visual small { display: block; margin-top: 1.25rem; color: #aab8cf; font-size: .72rem; }
+    .section { padding-block: clamp(4rem, 7vw, 6.6rem); border-bottom: 1px solid var(--line); }
+    .section-intro { max-width: 700px; margin-bottom: 2rem; color: var(--muted); font-size: clamp(1.05rem, 1.75vw, 1.24rem); }
+    .lead-grid { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: clamp(2rem, 7vw, 6.5rem); }
+    .big-thought { padding: 2rem; border-left: 5px solid var(--violet); border-radius: 0 15px 15px 0; background: var(--white); box-shadow: var(--shadow); font-size: clamp(1.28rem, 2.1vw, 1.7rem); font-weight: 680; line-height: 1.4; }
+    .big-thought em { color: var(--violet); font-style: normal; }
+    .primitive-grid, .use-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .primitive { padding: 1.35rem; border: 1px solid var(--line); border-radius: 15px; background: var(--white); }
+    .primitive .name { display: inline-block; margin-bottom: .9rem; color: var(--violet); font-size: .78rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    .primitive p, .use-case p { margin-bottom: 0; color: var(--muted); font-size: .94rem; }
+    .section-heading-row { display: flex; align-items: end; justify-content: space-between; gap: 2rem; }
+    .section-heading-row .section-intro { margin: 0 0 1.4rem; }
+    .fit-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; }
+    .fit-panel { padding: clamp(1.35rem, 3vw, 2.2rem); border: 1px solid var(--line); border-radius: 18px; background: var(--white); box-shadow: var(--shadow); }
+    .fit-panel strong { display: block; margin-bottom: 1.1rem; color: var(--teal); font-size: 1.17rem; }
+    .fit-panel.limit strong { color: var(--violet); }
+    .fit-panel ul { margin: 0; padding-left: 1.2rem; }
+    .fit-panel li + li { margin-top: .72rem; }
+    .fit-panel li { padding-left: .15rem; }
+    .fit-panel b { color: var(--ink); }
+    .context-note { max-width: 850px; margin: 1.3rem 0 0; color: var(--muted); font-size: .9rem; }
+    .use-case { min-height: 190px; padding: 1.4rem; border: 1px solid var(--line); border-radius: 16px; background: var(--white); }
+    .use-case .number { display: block; margin-bottom: 1.25rem; color: var(--teal); font-size: .84rem; font-weight: 850; letter-spacing: .1em; }
+    .implemented { background: linear-gradient(180deg, #fff, #f4f1ff); }
+    .ticket-quote { max-width: 780px; padding: 1.45rem 1.65rem; border-left: 5px solid var(--violet); border-radius: 0 14px 14px 0; background: var(--white); font-size: clamp(1.12rem, 2vw, 1.42rem); line-height: 1.5; }
+    .judgment-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .9rem; margin: 2rem 0 1.2rem; }
+    .judgment { padding: 1.1rem 1.25rem; border: 1px solid #d8cdf9; border-radius: 13px; background: var(--white); }
+    .judgment small { display: block; margin-bottom: .5rem; color: var(--violet); font-size: .72rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+    .judgment strong { display: block; font-size: 1.4rem; line-height: 1.25; }
+    .judgment span { color: var(--muted); font-size: .84rem; }
+    .route { display: flex; align-items: flex-start; gap: .8rem; padding: 1.1rem 1.25rem; border-radius: 13px; background: var(--navy); color: var(--white); }
+    .route .arrow { color: #76eee4; font-size: 1.35rem; line-height: 1.2; }
+    .route b { color: #aef6ed; }
+    .probability { max-width: 720px; margin-top: 2.2rem; }
+    .probability h3 { margin-bottom: .9rem; }
+    .prob-row { display: grid; grid-template-columns: 125px 1fr 48px; align-items: center; gap: 1rem; margin: .6rem 0; font-size: .9rem; }
+    .prob-track { height: 11px; overflow: hidden; border-radius: 20px; background: #dce2ed; }
+    .prob-fill { height: 100%; border-radius: inherit; background: var(--violet); }
+    .prob-row b { text-align: right; }
+    .demo-note { max-width: 800px; margin: 1.4rem 0 0; color: var(--muted); font-size: .86rem; }
+    .architecture { padding: clamp(1.1rem, 3vw, 2.3rem); border: 1px solid var(--line); border-radius: 22px; background: var(--white); box-shadow: var(--shadow); }
+    .flow { max-width: 880px; margin: 0 auto; padding: 0; list-style: none; }
+    .flow-step { padding: 1.2rem 1.4rem; border: 1px solid var(--line); border-radius: 13px; background: var(--paper); }
+    .flow-step .stage { display: block; margin-bottom: .4rem; color: var(--violet); font-size: .72rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    .flow-step h3 { margin: 0 0 .35rem; }
+    .flow-step p { margin: 0; color: var(--muted); font-size: .94rem; }
+    .flow-step.review { border-color: #bdb0e8; background: var(--violet-soft); }
+    .flow-step.final { border-color: #a8d9d3; background: var(--teal-soft); }
+    .flow-arrow { height: 34px; display: grid; place-items: center; color: var(--violet); font-size: 1.35rem; font-weight: 800; }
+    .field-list { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .7rem; }
+    .field-list span { padding: .22rem .55rem; border: 1px solid #c9bbef; border-radius: 6px; background: rgba(255,255,255,.65); color: #45228e; font-size: .74rem; font-weight: 700; }
+    .branches { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem; }
+    .branches .flow-step { height: 100%; }
+    .branches .flow-step:first-child { border-color: #d1c4f6; background: #f6f2ff; }
+    .branches .flow-step:last-child { border-color: #acdcd8; background: #f0faf8; }
+    .example-note { display: grid; grid-template-columns: 1fr auto; gap: 1.2rem; align-items: center; margin-top: 1.2rem; padding: 1.1rem 1.3rem; border-radius: 12px; background: #f0f3f9; }
+    .example-note p { margin: 0; color: var(--muted); font-size: .91rem; }
+    .example-note strong { color: var(--ink); }
+    .example-note .tag { white-space: nowrap; color: var(--violet); font-size: .78rem; font-weight: 800; }
+    .measurements { background: var(--navy); color: var(--white); }
+    .measurements .section-kicker { color: #83e9de; }
+    .measurements .section-intro { color: #cad6e6; }
+    .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .metric-card { padding: 1.4rem; border: 1px solid #3c4b67; border-radius: 16px; background: #1c2943; }
+    .metric-card h3 { margin-bottom: .3rem; }
+    .metric-card p { margin-bottom: 1.3rem; color: #b8c6d8; font-size: .85rem; }
+    .metric-head, .metric-data { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .45rem; align-items: center; }
+    .metric-head { padding: .65rem .2rem; border-bottom: 1px solid #4c5a73; color: #aebdd2; font-size: .73rem; font-weight: 750; text-transform: uppercase; }
+    .metric-data { padding: .9rem .2rem; border-bottom: 1px solid #374762; font-size: .89rem; }
+    .metric-data:last-child { border-bottom: 0; }
+    .metric-data b { color: #b5fff0; font-variant-numeric: tabular-nums; }
+    .metric-card .detail { margin: 1.1rem 0 0; color: #d6e0ec; font-size: .82rem; }
+    .measurements .disclaimer { max-width: 890px; margin: 1.4rem 0 0; color: #b7c5d9; font-size: .84rem; }
+    .closing { padding-block: clamp(4rem, 7vw, 6rem); }
+    .final-grid { display: grid; grid-template-columns: 1fr .85fr; gap: 3rem; }
+    .closing p { color: var(--muted); }
+    .demo-links { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.2rem; }
+    .demo-links a { display: inline-block; padding: .65rem .85rem; border: 1px solid #c7d0e0; border-radius: 9px; background: var(--white); color: var(--violet); font-size: .86rem; font-weight: 800; text-decoration: none; }
+    .demo-links a:hover { border-color: var(--violet); background: var(--violet-soft); }
+    .sources { padding: 1.3rem; border: 1px solid var(--line); border-radius: 14px; background: var(--white); }
+    .sources h3 { margin-bottom: .8rem; }
+    .sources ul { margin: 0; padding-left: 1.1rem; color: var(--muted); font-size: .86rem; }
+    .sources li + li { margin-top: .5rem; }
+    .sources p { margin: 1rem 0 0; font-size: .81rem; }
+    footer { padding: 1.3rem 0 2rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .78rem; }
+    @media (max-width: 900px) {
+      .hero-inner, .lead-grid, .final-grid { grid-template-columns: 1fr; }
+      .hero-visual { max-width: 620px; }
+      .primitive-grid, .use-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .header-inner { align-items: flex-start; flex-direction: column; gap: .25rem; padding-block: .55rem; }
+      nav { max-width: 100%; }
+      section { scroll-margin-top: 114px; }
+    }
+    @media (max-width: 650px) {
+      body { font-size: 16px; }
+      .shell { width: min(100% - 2rem, 1120px); }
+      .hero-inner { padding-block: 3.8rem 4rem; }
+      h1 { font-size: clamp(2.8rem, 12vw, 4.2rem); }
+      h2 { font-size: clamp(2.2rem, 9vw, 3rem); }
+      .section { padding-block: 3.9rem; }
+      .primitive-grid, .use-grid, .fit-grid, .judgment-grid, .metric-grid, .branches, .final-grid { grid-template-columns: 1fr; }
+      .use-case { min-height: 0; }
+      .judgment-grid { gap: .6rem; }
+      .prob-row { grid-template-columns: 93px 1fr 43px; gap: .6rem; font-size: .82rem; }
+      .architecture { padding: 1rem; }
+      .flow-step { padding: 1rem; }
+      .example-note { grid-template-columns: 1fr; gap: .5rem; }
+      .metric-card { padding: 1.1rem; }
+      .metric-data { font-size: .78rem; }
+      .metric-head { font-size: .65rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="#top" aria-label="Jev Decision Lab, back to top"><span class="brand-mark" aria-hidden="true">J</span>Jev Decision Lab</a>
+      <nav aria-label="Page sections">
+        <a href="#what">What</a><a href="#fit">Where it fits</a><a href="#uses">Uses</a><a href="#support">Support demo</a><a href="#resume">Resume flow</a><a href="#results">Results</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="shell hero-inner">
+        <div>
+          <p class="eyebrow">A field guide from the Jev Decision Lab</p>
+          <h1 id="hero-title">Jev turns language into decisions.</h1>
+          <p class="hero-lede">Give TypeSafe's Jev a piece of context and a clear question. It returns a bounded answer and probabilities your software can use.</p>
+          <div class="hero-actions"><a class="button" href="#what">Follow the story</a><a class="button ghost" href="#resume">See the resume architecture</a></div>
+        </div>
+        <div class="hero-visual" aria-label="Example Jev support-ticket output">
+          <p class="visual-label">Input · support ticket</p>
+          <p class="hero-ticket">“I was charged twice for my subscription this morning. Please refund the duplicate payment as soon as possible.”</p>
+          <div class="visual-divider"></div>
+          <p class="visual-label">Bounded judgments</p>
+          <div class="answer-line"><span>Choice · category</span><strong>Billing</strong></div>
+          <div class="answer-line"><span>Score · urgency</span><strong>2.0 / 3</strong></div>
+          <div class="answer-line"><span>Noul · needs a person</span><strong>55% yes</strong></div>
+          <small>Illustrative output from the POC's billing sample, captured 27 Sep 2026.</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="what" aria-labelledby="what-title">
+      <div class="shell">
+        <p class="section-kicker">01 / What it solves</p>
+        <div class="lead-grid">
+          <div><h2 id="what-title">Small decisions are still language problems.</h2><p class="section-intro">A support message can be easy for a person to understand but hard to capture with fixed rules. A full generated response gives the app more text to interpret before it can act.</p></div>
+          <div class="big-thought">Jev takes <em>state + typed questions</em> and returns answers with probabilities. The application decides what to do with them.</div>
+        </div>
+        <div class="primitive-grid" aria-label="Jev question types">
+          <article class="primitive"><span class="name">Choice</span><h3>Which option?</h3><p>Pick one defined category, such as billing or technical support, and see the probability across options.</p></article>
+          <article class="primitive"><span class="name">Score</span><h3>How much?</h3><p>Place something on an ordered scale, such as low to critical urgency.</p></article>
+          <article class="primitive"><span class="name">Noul</span><h3>Is it true?</h3><p>Get a yes probability for a focused condition, such as whether a person should review a ticket.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="fit" aria-labelledby="fit-title">
+      <div class="shell">
+        <p class="section-kicker">02 / Fit and limits</p>
+        <h2 id="fit-title">Use Jev for judgment. Give exact work to exact tools.</h2>
+        <p class="section-intro">The useful shape is a semantic question with known answers. Jev 1.13 has documented weak spots, so the surrounding code matters.</p>
+        <div class="fit-grid">
+          <div class="fit-panel"><strong>Good fit for Jev</strong><ul><li>Choosing among known categories</li><li>Grading a clearly defined dimension</li><li>Checking whether a condition is supported by text</li><li>Sending uncertain cases to another step</li></ul></div>
+          <div class="fit-panel limit"><strong>Use another tool for</strong><ul><li><b>Writing or open-ended explanation:</b> generative LLM</li><li><b>Math, counting, dates, and exact rules:</b> code</li><li><b>Permissions and security decisions:</b> policy code</li><li><b>Long chains of reasoning:</b> a reasoning model or a simpler workflow</li></ul></div>
+        </div>
+        <p class="context-note">Keep the state relevant and treat model output as a signal. TypeSafe also warns that adversarial text can steer Jev; important actions need testing, safeguards, and an uncertainty path.</p>
+      </div>
+    </section>
+
+    <section class="section" id="uses" aria-labelledby="uses-title">
+      <div class="shell">
+        <p class="section-kicker">03 / Beyond the demo</p>
+        <h2 id="uses-title">Where this pattern could help.</h2>
+        <p class="section-intro">These are possible uses from the research, not features in the current POC.</p>
+        <div class="use-grid">
+          <article class="use-case"><span class="number">01 · VOICE ASSISTANT</span><h3>Know when to hand off</h3><p>Judge whether the caller's issue is understood or needs a person. Code keeps control of the conversation stage.</p></article>
+          <article class="use-case"><span class="number">02 · AGENT TOOLS</span><h3>Check intent before action</h3><p>Assess whether a proposed tool call matches the request. Authentication and permission checks stay in code.</p></article>
+          <article class="use-case"><span class="number">03 · RETRIEVAL</span><h3>Find the useful context</h3><p>Judge which retrieved passage is relevant before a generative model uses it.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section implemented" id="support" aria-labelledby="support-title">
+      <div class="shell">
+        <p class="section-kicker">04 / Implemented POC · support</p>
+        <h2 id="support-title">One ticket becomes three judgments.</h2>
+        <blockquote class="ticket-quote">“I was charged twice for my subscription this morning. Please refund the duplicate payment as soon as possible.”</blockquote>
+        <div class="judgment-grid">
+          <div class="judgment"><small>Choice · category</small><strong>Billing</strong><span>100% displayed probability</span></div>
+          <div class="judgment"><small>Score · urgency</small><strong>2.0 / 3</strong><span>High urgency on this rubric</span></div>
+          <div class="judgment"><small>Noul · human review</small><strong>55% yes</strong><span>App threshold: 50%</span></div>
+        </div>
+        <div class="route"><span class="arrow" aria-hidden="true">↳</span><div><b>Code makes the route:</b> add the ticket to the billing queue for human review.</div></div>
+        <div class="probability" aria-label="Jev support category probabilities">
+          <h3>The category distribution is visible</h3>
+          <div class="prob-row"><span>Billing</span><div class="prob-track"><div class="prob-fill" style="width:100%"></div></div><b>100%</b></div>
+          <div class="prob-row"><span>Technical</span><div class="prob-track"><div class="prob-fill" style="width:0%"></div></div><b>0%</b></div>
+          <div class="prob-row"><span>Cancellation</span><div class="prob-track"><div class="prob-fill" style="width:0%"></div></div><b>0%</b></div>
+          <div class="prob-row"><span>General</span><div class="prob-track"><div class="prob-fill" style="width:0%"></div></div><b>0%</b></div>
+        </div>
+        <p class="demo-note">Percentages are rounded as shown in the app. OpenAI chose billing and urgency 2 for this ticket, but returned “No” for human review. Agreement between providers is not a measure of correctness.</p>
+      </div>
+    </section>
+
+    <section class="section" id="resume" aria-labelledby="resume-title">
+      <div class="shell">
+        <p class="section-kicker">05 / Implemented POC · resume evaluation</p>
+        <h2 id="resume-title">A reviewed requirement travels through two evaluations.</h2>
+        <p class="section-intro">The app compares documented resume evidence with the job description. It does not make a hiring decision.</p>
+        <div class="architecture">
+          <ol class="flow" aria-label="Resume evaluation architecture">
+            <li class="flow-step"><span class="stage">1 · Input</span><h3>Job description + resume</h3><p>The sample texts are preloaded. A user can replace either one.</p></li>
+            <li class="flow-arrow" aria-hidden="true">↓</li>
+            <li class="flow-step"><span class="stage">2 · Shared extraction</span><h3>OpenAI proposes requirements from the JD</h3><p>Each retained requirement needs an exact quote from the job description. The resume does not create new requirements.</p></li>
+            <li class="flow-arrow" aria-hidden="true">↓</li>
+            <li class="flow-step review"><span class="stage">3 · Human review</span><h3>A person checks what will be judged</h3><p>Review the wording and evidence needed. Resolve any importance marked “unspecified.”</p><div class="field-list" aria-label="Requirement fields"><span>Requirement</span><span>Evaluation criteria</span><span>Importance</span><span>Jev primitive</span></div></li>
+            <li class="flow-arrow" aria-hidden="true">↓</li>
+            <li class="branches" aria-label="Two independent evaluation branches">
+              <div class="flow-step"><span class="stage">4a · Jev</span><h3>Typed judgments</h3><p>Uses Noul, Score, or Choice for each requirement. A separate Choice selects a resume excerpt from candidates.</p></div>
+              <div class="flow-step"><span class="stage">4b · OpenAI</span><h3>Structured evaluation</h3><p>Assesses the same reviewed requirements and provides a concise explanation.</p></div>
+            </li>
+            <li class="flow-arrow" aria-hidden="true">↓</li>
+            <li class="flow-step final"><span class="stage">5 · App code and display</span><h3>Verify evidence. Calculate the range.</h3><p>Code accepts only exact resume quotes, weights mandatory items twice as much as preferred items, and widens the match range for uncertain items. Results appear side by side.</p></li>
+          </ol>
+          <div class="example-note"><p><strong>Example:</strong> the JD prefers Azure as the primary recent production platform. The resume says production deployments used AWS ECS. Choice identifies AWS; the evidence quote is checked against the resume.</p><span class="tag">JD quote → requirement → evidence</span></div>
+        </div>
+        <p class="demo-note">The TypeSafe AI <code>SKILL.md</code> guided question design during development: focused judgments, shared state, and rules in code. The deployed app does not load the skill at runtime.</p>
+      </div>
+    </section>
+
+    <section class="section measurements" id="results" aria-labelledby="results-title">
+      <div class="shell">
+        <p class="section-kicker">06 / What this POC measured</p>
+        <h2 id="results-title">The observed latency and estimated cost.</h2>
+        <p class="section-intro">Two single runs captured on 27 Sep 2026. OpenAI used <code>gpt-5.6-luna</code>. Cost is the app's estimate from token usage and configured rates.</p>
+        <div class="metric-grid">
+          <div class="metric-card"><h3>Support ticket</h3><p>The same preloaded billing message.</p><div class="metric-head"><span>Provider</span><span>Latency</span><span>Est. cost</span></div><div class="metric-data"><span>Jev</span><b>174 ms</b><b>$0.000022</b></div><div class="metric-data"><span>OpenAI</span><b>2,130 ms</b><b>$0.000082</b></div><p class="detail">In this run, Jev took about 12× less time, with about 73% lower estimated cost.</p></div>
+          <div class="metric-card"><h3>Resume evaluation</h3><p>Both branches used the reviewed requirements.</p><div class="metric-head"><span>Provider</span><span>Latency</span><span>Est. cost</span></div><div class="metric-data"><span>Jev</span><b>183 ms</b><b>$0.000130</b></div><div class="metric-data"><span>OpenAI</span><b>6,769 ms</b><b>$0.001089</b></div><p class="detail">Jev took about 37× less evaluation time, with about 88% lower estimated evaluation cost.</p></div>
+        </div>
+        <p class="disclaimer"><strong>Shared step:</strong> OpenAI requirement extraction happened before both resume branches. Its time and cost are excluded from both evaluation figures. These observations show how the demo behaved in one run; network conditions, provider load, input size, and model choice can change the result. Neither speed nor provider agreement proves accuracy.</p>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="final-title">
+      <div class="shell final-grid">
+        <div><p class="section-kicker">Keep the roles clear</p><h2 id="final-title">Jev supplies the judgment. The system stays in charge.</h2><p>Use Jev when the question is focused and the possible answers are known. Let people review important criteria, let code enforce exact rules, and use a generative model when the task needs new text.</p><div class="demo-links"><a href="https://jev-chi-navy.vercel.app/" target="_blank" rel="noopener noreferrer">Open support demo ↗</a><a href="https://jev-chi-navy.vercel.app/resume-evaluation" target="_blank" rel="noopener noreferrer">Open resume demo ↗</a></div></div>
+        <aside class="sources" aria-label="Sources and method"><h3>Sources and method</h3><ul><li><a href="https://docs.typesafe.ai/concepts/system-one" target="_blank" rel="noopener noreferrer">TypeSafe: System One</a> and <a href="https://docs.typesafe.ai/primitives" target="_blank" rel="noopener noreferrer">question types</a></li><li><a href="https://docs.typesafe.ai/model-jaggedness/jev-1.13" target="_blank" rel="noopener noreferrer">TypeSafe: Jev 1.13 limits</a></li><li>Supplied research: <em>Jev for Enterprise AI: Where It Fits, How to Use It, and Where It Can Help Your Projects</em></li><li>POC source: support and resume evaluation routes in this workspace</li></ul><p>Potential uses are examples from the research. POC descriptions and the dated measurement snapshot are drawn from the implemented app.</p></aside>
+      </div>
+    </section>
+  </main>
+  <footer><div class="shell">Jev Decision Lab · Standalone explainer · 28 Sep 2026</div></footer>
+</body>
+</html>

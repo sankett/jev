@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+/.jev-router/
 
 # next.js
 /.next/
